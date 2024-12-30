@@ -1,0 +1,26 @@
+<%- include('../layouts/layout') { title: "Pedidos", body: ejs.render(`
+    <h2>Lista de Pedidos</h2>
+    <% if (error) { %>
+    <p style="color:red;"><%= error %></p>
+    <% } %>
+    <table border="1">
+        <tr>
+        <th>Cliente</th>
+        <th>Ciudad</th>
+        <th>Items</th>
+        <th>Fecha</th>
+        </tr>
+    <% orders.forEach(order => { %>
+        <tr>
+        <td><%= order.customerName %></td>
+        <td><%= order.city %></td>
+        <td>
+        <% order.items.forEach(item => { %>
+            <p><%= item.productId.name %> (x<%= item.quantity %>)</p>
+        <% }) %>
+        </td>
+        <td><%= order.createdAt.toLocaleString() %></td>
+    </tr>
+    <% }) %>
+</table>
+`) } %>

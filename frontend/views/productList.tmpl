@@ -1,0 +1,29 @@
+<!-- views/productList.tmpl -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Lista de Productos</title>
+</head>
+<body>
+    <h1>Productos Disponibles</h1>
+    {{range .}}
+        <div style="border:1px solid #ccc; margin:10px; padding:10px;">
+            <h2>{{.Name}}</h2>
+            <p>{{.Description}}</p>
+            <p>Precio: ${{.Price}}</p>
+            
+            <!-- Enlace o botón para ir al formulario de pedido -->
+            <form action="/order" method="GET">
+                <!--
+                  En lugar de usar JavaScript, pasaremos
+                  el ID de producto por query param o lo que veas conveniente.
+                  Otra opción es un <input type="hidden"> pero hay que adecuar
+                  la lógica en orderController.
+                -->
+                <button type="submit">Comprar</button>
+            </form>
+        </div>
+    {{end}}
+</body>
+</html>

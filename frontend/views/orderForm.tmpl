@@ -1,0 +1,35 @@
+<!-- views/orderForm.tmpl -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Crear Pedido</title>
+</head>
+<body>
+    <h1>Formulario de Pedido</h1>
+
+    <form action="/order" method="POST">
+        <!-- En caso de querer pasar un ID de producto seleccionado -->
+        <!-- <input type="hidden" name="productID" value="{{.}}" /> -->
+
+        <label for="customerName">Nombre:</label>
+        <input type="text" name="customerName" id="customerName" required>
+        <br>
+
+        <label for="city">Ciudad:</label>
+        <input type="text" name="city" id="city" required>
+        <br>
+
+        <label for="productID">ID del Producto:</label>
+        <input type="text" name="productID" id="productID" required>
+        <br>
+
+        <label for="quantity">Cantidad:</label>
+        <input type="number" name="quantity" id="quantity" value="1" min="1" required>
+        <br><br>
+
+        <button type="submit">Finalizar Pedido</button>
+    </form>
+
+</body>
+</html>
