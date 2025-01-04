@@ -1,4 +1,3 @@
-// controllers/productController.go
 package controllers
 
 import (
@@ -8,41 +7,47 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/pablomedina7/pengushop/frontend/models" // Ajusta a tu módulo real
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type ProductController struct {
-	ProductCollection *mongo.Collection
-	Tmpl              *template.Template
+	productCollection *mongo.Collection
+	tmpl              *template.Template
 }
 
-func (pc *ProductController) ListProducts(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
-		return
+func NewProductController(client *mongo.Client) *ProductController {
+	return &ProductController{
+		productCollection: client.Database("pengushop").Collection("products"),
+		tmpl:              template.Must(template.ParseFiles("views/index.html")),
 	}
+}
 
+func (pc *ProductController) RenderIndex(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	cursor, err := pc.ProductCollection.Find(ctx, bson.M{}, options.Find())
+	cursor, err := pc.productCollection.Find(ctx, bson.M{})
 	if err != nil {
-		log.Println(err)
-		http.Error(w, "Error al obtener productos", http.StatusInternalServerError)
+		log.Println("Error al buscar productos:", err)
+		http.Error(w, "No se pudieron obtener productos", http.StatusInternalServerError)
 		return
 	}
 	defer cursor.Close(ctx)
 
-	var products []models.Product
+	var products []map[string]interface{}
 	if err = cursor.All(ctx, &products); err != nil {
-		log.Println(err)
+		log.Println("Error al decodificar productos:", err)
 		http.Error(w, "Error al decodificar productos", http.StatusInternalServerError)
 		return
 	}
 
-	// Renderizamos la plantilla productList.tmpl
-	pc.Tmpl.ExecuteTemplate(w, "productList.tmpl", products)
+	data := map[string]interface{}{
+		"Products": products,
+	}
+
+	if err := pc.tmpl.Execute(w, data); err != nil {
+		log.Println("Error al renderizar plantilla:", err)
+		http.Error(w, "Error al renderizar", http.StatusInternalServerError)
+	}
 }

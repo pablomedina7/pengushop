@@ -1,56 +1,22 @@
 package main
 
 import (
-	"html/template"
+	"context"
 	"log"
 	"net/http"
-	"os"
 
-	"github.com/joho/godotenv"
-
-	"github.com/pablomedina7/pengushop/frontend/controllers"
+	"github.com/pablomedina7/pengushop/config"
+	"github.com/pablomedina7/pengushop/controllers"
 )
 
-// NO declaro var client *mongo.Client aquí, ya está en db.go
-
 func main() {
-	// 1. Carga .env
-	err := godotenv.Load()
-	if err != nil {
-		log.Println("No se encontró .env, se usarán valores por defecto.")
-	}
+	client := config.ConnectDB()                  // Conectar a MongoDB
+	defer client.Disconnect(context.Background()) // Desconectar al salir
 
-	// 2. Conecta a Mongo
-	//    Esto asigna a la variable client declarada en db.go
-	ConnectDB()
+	productController := controllers.NewProductController(client) // Inicializar el controlador
+	http.HandleFunc("/", productController.RenderIndex)           // Manejar la vista de productos
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./public"))))
 
-	// 3. Colecciones
-	productCol := GetCollection(client, "products")
-	orderCol := GetCollection(client, "orders")
-
-	// 4. Plantillas
-	tmpl := template.Must(template.ParseGlob("views/*.tmpl"))
-
-	// 5. Controladores
-	pc := &controllers.ProductController{
-		ProductCollection: productCol,
-		Tmpl:              tmpl,
-	}
-	oc := &controllers.OrderController{
-		OrderCollection:   orderCol,
-		ProductCollection: productCol,
-		Tmpl:              tmpl,
-	}
-
-	// 6. Rutas
-	http.HandleFunc("/", pc.ListProducts)
-	http.HandleFunc("/order", oc.CreateOrder)
-
-	// 7. Arranque
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
-	log.Printf("Tienda Go corriendo en http://localhost:%s", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	log.Println("Servidor corriendo en http://localhost:8080")
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }

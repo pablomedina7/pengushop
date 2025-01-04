@@ -1,38 +1,33 @@
-// controllers/authController.js
-const User = require('../models/user');
+const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 exports.getLogin = (req, res) => {
-  // Renderizar formulario de login (GET)
-res.render('admin/login', { error: null });
+  res.render('admin/login', { error: null }); // Incluye 'admin/' en la ruta de la vista
 };
 
+
 exports.postLogin = async (req, res) => {
-  // Procesar el login (POST)
-const { username, password } = req.body;
-try {
+  const { username, password } = req.body;
+  try {
     const user = await User.findOne({ username });
-    if (!user) {
-    return res.render('admin/login', { error: 'Usuario no encontrado' });
+    if (!user || !(await user.comparePassword(password))) {
+      return res.render('admin/login', { error: 'Credenciales inválidas' });
     }
 
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-    return res.render('admin/login', { error: 'Credenciales inválidas' });
-    }
+    // Generar token JWT
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    // Generar token
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-    expiresIn: '1h'
-    });
-
-    // Guardar el token en una cookie
-    res.cookie('token', token, { httpOnly: true });
-
-    return res.redirect('/admin/dashboard');
-} catch (error) {
+    // Redirigir con el token como parámetro en la URL
+    res.redirect(`/admin/dashboard?token=${token}`);
+  } catch (error) {
     console.error(error);
-    return res.render('admin/login', { error: 'Error al iniciar sesión' });
-}
+    res.render('admin/login', { error: 'Error al iniciar sesión' });
+  }
+};
+
+
+exports.logout = (req, res) => {
+  res.clearCookie('token');
+  res.redirect('/auth/login');
 };

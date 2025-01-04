@@ -1,14 +1,23 @@
-// routes/productRoutes.js
 const express = require('express');
 const router = express.Router();
-const productController = require('../controllers/productController');
-const { verifyToken } = require('../middleware/authMiddleware');
+const productController = require('../controllers/productController'); // Verifica que la ruta sea correcta
 
-router.get('/', verifyToken, productController.getAllProducts);
-router.get('/create', verifyToken, productController.getCreateProduct);
-router.post('/create', verifyToken, productController.postCreateProduct);
-router.get('/edit/:id', verifyToken, productController.getEditProduct);
-router.post('/edit/:id', verifyToken, productController.postEditProduct);
-router.post('/delete/:id', verifyToken, productController.deleteProduct);
+// Ruta para obtener todos los productos
+router.get('/', productController.getAllProducts);
+
+// Ruta para mostrar el formulario de creación
+router.get('/create', productController.getCreateProduct);
+
+// Ruta para procesar la creación de un producto
+router.post('/create', productController.postCreateProduct);
+
+// Ruta para mostrar el formulario de edición
+router.get('/edit/:id', productController.getEditProduct);
+
+// Ruta para procesar la edición de un producto
+router.post('/edit/:id', productController.postEditProduct);
+
+// Ruta para eliminar un producto
+router.post('/delete/:id', productController.deleteProduct);
 
 module.exports = router;

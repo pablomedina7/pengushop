@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administración</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 10px 20px;
+    }
+    header h1 {
+      margin: 0;
+    }
+    main {
+      padding: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    table th, table td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    table th {
+      background-color: #f4f4f4;
+    }
+    button {
+      padding: 5px 10px;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #555;
+    }
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+    form {
+      margin: 20px 0;
+    }
+    input {
+      padding: 5px;
+      margin: 5px 0;
+      width: calc(100% - 12px);
+    }
+    h2 {
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Panel de Administración</h1>
+  </header>
+
+  <main>
+    <!-- Sección de Productos -->
+    <h2>Productos</h2>
+
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Precio</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% products.forEach(product => { %>
+          <tr>
+            <td><input type="text" id="edit-name-<%= product._id %>" value="<%= product.name %>" disabled></td>
+            <td><input type="number" id="edit-price-<%= product._id %>" value="<%= product.price %>" step="0.01" disabled></td>
+            <td>
+              <button id="edit-btn-<%= product._id %>" onclick="enableEdit('<%= product._id %>')">Editar</button>
+              <form id="edit-form-<%= product._id %>" action="/admin/products/edit/<%= product._id %>" method="POST" style="display:inline;">
+                <input type="hidden" name="token" value="<%= token %>">
+                <input type="hidden" name="name" id="form-name-<%= product._id %>" value="<%= product.name %>">
+                <input type="hidden" name="price" id="form-price-<%= product._id %>" value="<%= product.price %>">
+                <button type="submit" id="save-btn-<%= product._id %>" style="display:none;">OK</button>
+              </form>
+              <form action="/admin/products/delete/<%= product._id %>" method="POST" style="display:inline;">
+                <input type="hidden" name="token" value="<%= token %>">
+                <button type="submit">Eliminar</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+    <h2>Añadir Producto</h2>
+    <form action="/admin/products/create" method="POST">
+      <input type="hidden" name="token" value="<%= token %>">
+      <label for="name">Nombre:</label>
+      <input type="text" id="name" name="name" required>
+      <label for="price">Precio:</label>
+      <input type="number" id="price" name="price" step="0.01" required>
+      <button type="submit">Añadir Producto</button>
+    </form>
+
+    <!-- Sección de Órdenes -->
+    <h2>Órdenes</h2>
+
+    <% if (orders && orders.length > 0) { %>
+      <table>
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Ciudad</th>
+            <th>Productos</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% orders.forEach(order => { %>
+            <tr>
+              <td><%= order.customerName %></td>
+              <td><%= order.city %></td>
+              <td>
+                <% order.items.forEach(item => { %>
+                  <p><%= item.productId.name %> (x<%= item.quantity %>)</p>
+                <% }) %>
+              </td>
+              <td>
+                <form action="/admin/orders/<%= order._id %>/update" method="POST">
+                  <select name="status">
+                    <option value="Pendiente" <%= order.status === 'Pendiente' ? 'selected' : '' %>>Pendiente</option>
+                    <option value="En Proceso" <%= order.status === 'En Proceso' ? 'selected' : '' %>>En Proceso</option>
+                    <option value="Entregado" <%= order.status === 'Entregado' ? 'selected' : '' %>>Entregado</option>
+                  </select>
+                  <button type="submit">Actualizar</button>
+                </form>
+              </td>
+              <td>
+                <form action="/admin/orders/<%= order._id %>/delete" method="POST">
+                  <button type="submit">Eliminar</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <p>No hay órdenes disponibles.</p>
+    <% } %>
+  </main>
+
+  <footer>
+    <p>© 2024 Tienda Online</p>
+  </footer>
+
+  <script>
+    function enableEdit(productId) {
+      document.getElementById(`edit-name-${productId}`).disabled = false;
+      document.getElementById(`edit-price-${productId}`).disabled = false;
+      document.getElementById(`save-btn-${productId}`).style.display = 'inline';
+      
+      document.getElementById(`edit-form-${productId}`).onsubmit = function() {
+        const nameField = document.getElementById(`edit-name-${productId}`);
+        const priceField = document.getElementById(`edit-price-${productId}`);
+        document.getElementById(`form-name-${productId}`).value = nameField.value;
+        document.getElementById(`form-price-${productId}`).value = priceField.value;
+      };
+    }
+  </script>
+</body>
+</html>
