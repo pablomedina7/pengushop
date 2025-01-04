@@ -16,13 +16,17 @@ type ProductController struct {
 	tmpl              *template.Template
 }
 
-func NewProductController(client *mongo.Client) *ProductController {
+// NewProductController recibe un *mongo.Collection para "products" y la plantilla principal (index.html).
+func NewProductController(productCol *mongo.Collection) *ProductController {
+	tmpl := template.Must(template.ParseFiles("views/index.html"))
+
 	return &ProductController{
-		productCollection: client.Database("pengushop").Collection("products"),
-		tmpl:              template.Must(template.ParseFiles("views/index.html")),
+		productCollection: productCol,
+		tmpl:              tmpl,
 	}
 }
 
+// RenderIndex muestra la lista de productos en la plantilla principal.
 func (pc *ProductController) RenderIndex(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()

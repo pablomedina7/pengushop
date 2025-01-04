@@ -1,12 +1,15 @@
-
+// /middleware/authMiddleware.js
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
 
 exports.verifyToken = (req, res, next) => {
-  const token = req.body.token || req.query.token || req.headers.authorization;
+  // Leer token de varias fuentes
+  const token =
+    req.body.token || req.query.token || req.headers.authorization;
 
   if (!token) {
-    return res.status(403).send('Acceso denegado. No se proporcionó un token.');
+    return res
+      .status(403)
+      .send('Acceso denegado. No se proporcionó un token.');
   }
 
   try {
@@ -14,6 +17,6 @@ exports.verifyToken = (req, res, next) => {
     req.userId = decoded.userId;
     next();
   } catch (error) {
-    res.status(401).send('Token inválido.');
+    return res.status(401).send('Token inválido.');
   }
 };

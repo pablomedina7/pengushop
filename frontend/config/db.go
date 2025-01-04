@@ -1,3 +1,4 @@
+// config/db.go
 package config
 
 import (
@@ -8,12 +9,11 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// ConnectDB establece una conexión a MongoDB
-func ConnectDB() *mongo.Client {
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
-	client, err := mongo.Connect(context.Background(), clientOptions)
+// ConnectDB se conecta a MongoDB usando la URI que le pases, y devuelve el *mongo.Client.
+func ConnectDB(uri string) *mongo.Client {
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(uri))
 	if err != nil {
-		log.Fatal("Error al conectar a MongoDB:", err)
+		log.Fatalf("Error al conectar a MongoDB: %v", err)
 	}
 	return client
 }

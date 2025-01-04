@@ -1,24 +1,13 @@
-const Product = require('../models/product'); // Asegúrate de que este archivo existe y está correctamente configurado
-const Order = require('../models/order'); // Asegúrate de que este archivo existe y está correctamente configurado
-// Obtener todos los productos y órdenes
-exports.getAllProducts = async (req, res) => {
-  try {
-    const products = await Product.find(); // Obtiene todos los productos
-    const orders = await Order.find().populate('items.productId'); // Obtiene todas las órdenes y resuelve los productos relacionados
-    const token = req.query.token || ''; // Obtiene el token desde la consulta o agrega lógica para almacenarlo
-
-    res.render('admin/view_admin', { products, orders, token, error: null });
-  } catch (error) {
-    console.error('Error al cargar productos y órdenes:', error.message);
-    res.render('admin/view_admin', { products: [], orders: [], token: '', error: 'Error al cargar productos y órdenes' });
-  }
-};
+// /controllers/productController.js
+const Product = require('../models/product');
 
 // Crear un producto
 exports.postCreateProduct = async (req, res) => {
-  const { name, price, token } = req.body;
+  const { name, price } = req.body;
+  const token = req.body.token || req.query.token || '';
   try {
     await Product.create({ name, price });
+    // Redirige de nuevo al panel de admin
     res.redirect(`/admin/dashboard?token=${token}`);
   } catch (error) {
     console.error('Error al crear producto:', error.message);
@@ -28,7 +17,8 @@ exports.postCreateProduct = async (req, res) => {
 
 // Editar un producto
 exports.postEditProduct = async (req, res) => {
-  const { name, price, token } = req.body;
+  const { name, price } = req.body;
+  const token = req.body.token || req.query.token || '';
   const productId = req.params.id;
 
   try {
@@ -42,7 +32,7 @@ exports.postEditProduct = async (req, res) => {
 
 // Eliminar un producto
 exports.deleteProduct = async (req, res) => {
-  const { token } = req.body;
+  const token = req.body.token || req.query.token || '';
   const productId = req.params.id;
 
   try {

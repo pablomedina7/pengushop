@@ -13,19 +13,26 @@ import (
 )
 
 type OrderController struct {
-	OrderCollection   *mongo.Collection
-	ProductCollection *mongo.Collection
+	orderCollection   *mongo.Collection
+	productCollection *mongo.Collection
 }
 
-// Crear una nueva orden
+// NewOrderController construye el controlador para pedidos
+func NewOrderController(orderCol, productCol *mongo.Collection) *OrderController {
+	return &OrderController{
+		orderCollection:   orderCol,
+		productCollection: productCol,
+	}
+}
+
+// CreateOrder maneja la creación de una orden via formulario (POST /order).
 func (oc *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
 		return
 	}
 
-	err := r.ParseForm()
-	if err != nil {
+	if err := r.ParseForm(); err != nil {
 		http.Error(w, "Error al procesar el formulario", http.StatusBadRequest)
 		return
 	}
@@ -64,12 +71,13 @@ func (oc *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	_, err = oc.OrderCollection.InsertOne(ctx, order)
+	_, err = oc.orderCollection.InsertOne(ctx, order)
 	if err != nil {
 		log.Println("Error al insertar la orden:", err)
 		http.Error(w, "Error al crear la orden", http.StatusInternalServerError)
 		return
 	}
 
+	// Redirige de nuevo a la página principal
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
