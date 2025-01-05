@@ -4,22 +4,19 @@ const Order = require('../models/order');
 // Mostrar el dashboard de administración
 exports.viewAdminDashboard = async (req, res) => {
   try {
-    // Obtener todos los productos de la base de datos
     const products = await Product.find({});
-
-    // Obtener las órdenes si ya están configuradas
     const orders = await Order.find({})
-      .populate('items.productId') // Asegurarnos de popular los productos en las órdenes
+      .populate('items.productId', 'name image price') // Incluye los detalles del producto
       .exec();
 
-    // Renderizar la vista con los datos
-    res.render('admin/view_admin', { products, orders, error: null });
+    const token = req.query.token; // O el método que uses para obtener el token
+
+    res.render('admin/view_admin', { products, orders, token, error: null });
   } catch (err) {
-    console.error('Error al cargar el panel de administrador:', err);
-    res.render('admin/view_admin', { products: [], orders: [], error: 'Ocurrió un error al cargar los datos' });
+    console.error('Error al cargar el panel de administración:', err);
+    res.render('admin/view_admin', { products: [], orders: [], token: '', error: 'Ocurrió un error al cargar los datos.' });
   }
 };
-
 
 // Crear un producto
 exports.createProduct = async (req, res) => {

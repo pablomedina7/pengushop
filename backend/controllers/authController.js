@@ -19,7 +19,7 @@ exports.postLogin = async (req, res) => {
 
     // Generar un token JWT
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
+      expiresIn: '8h',
     });
 
     // Redirigir al dashboard con el token en la URL
@@ -29,4 +29,5 @@ exports.postLogin = async (req, res) => {
     res.render('admin/login', { error: 'Error al iniciar sesión' });
   }
 };
+
 

@@ -68,18 +68,20 @@ func (oc *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Crear el pedido
+	// Crear el pedido con los detalles del producto
+	// Crear el pedido con los detalles del producto
 	order := models.Order{
 		CustomerName: customerName,
 		City:         city,
 		Phone:        phone,
 		Items: []models.OrderItem{
 			{
-				ProductID: productID,
-				Quantity:  quantity,
+				ProductID:   productID,
+				ProductName: product.Name, // <-- Incluye el nombre del producto
+				Quantity:    quantity,
 			},
 		},
-		CreatedAt: primitive.NewDateTimeFromTime(time.Now()), // Conversión correcta
+		CreatedAt: primitive.NewDateTimeFromTime(time.Now()),
 	}
 
 	_, err = oc.orderCollection.InsertOne(ctx, order)
