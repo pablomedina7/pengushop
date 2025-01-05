@@ -1,57 +1,84 @@
 package controllers
 
 import (
-	"context"
 	"html/template"
 	"log"
 	"net/http"
-	"time"
 
+	"github.com/pablomedina7/pengushop/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type ProductController struct {
 	productCollection *mongo.Collection
-	tmpl              *template.Template
 }
 
-// NewProductController recibe un *mongo.Collection para "products" y la plantilla principal (index.html).
 func NewProductController(productCol *mongo.Collection) *ProductController {
-	tmpl := template.Must(template.ParseFiles("views/index.html"))
-
-	return &ProductController{
-		productCollection: productCol,
-		tmpl:              tmpl,
-	}
+	return &ProductController{productCollection: productCol}
 }
 
-// RenderIndex muestra la lista de productos en la plantilla principal.
-func (pc *ProductController) RenderIndex(w http.ResponseWriter, r *http.Request) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
+// ProductView define cómo se representan los productos en la vista
+type ProductView struct {
+	ID          string  `json:"id"`
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	Price       float64 `json:"price"`
+	Image       string  `json:"image"`
+}
 
+func (pc *ProductController) RenderIndex(w http.ResponseWriter, r *http.Request) {
+	// 1. Obtener productos desde la base de datos
+	ctx := r.Context()
 	cursor, err := pc.productCollection.Find(ctx, bson.M{})
 	if err != nil {
-		log.Println("Error al buscar productos:", err)
-		http.Error(w, "No se pudieron obtener productos", http.StatusInternalServerError)
-		return
+		log.Println("Error al obtener productos:", err)
+		http.Error(w, "Error al obtener productos", http.StatusInternalServerError)
+		return // Detener ejecución
 	}
 	defer cursor.Close(ctx)
 
-	var products []map[string]interface{}
-	if err = cursor.All(ctx, &products); err != nil {
-		log.Println("Error al decodificar productos:", err)
-		http.Error(w, "Error al decodificar productos", http.StatusInternalServerError)
-		return
+	var products []ProductView
+	for cursor.Next(ctx) {
+		var product models.Product
+		if err := cursor.Decode(&product); err != nil {
+			log.Println("Error al decodificar producto:", err)
+			continue
+		}
+		products = append(products, ProductView{
+			ID:          product.ID.Hex(),
+			Name:        product.Name,
+			Description: product.Description,
+			Price:       product.Price,
+			Image:       product.Image,
+		})
 	}
 
-	data := map[string]interface{}{
-		"Products": products,
+	// Verificar si hubo errores al iterar sobre los documentos
+	if err := cursor.Err(); err != nil {
+		log.Println("Error durante la iteración de productos:", err)
+		http.Error(w, "Error al procesar productos", http.StatusInternalServerError)
+		return // Detener ejecución
 	}
 
-	if err := pc.tmpl.Execute(w, data); err != nil {
+	// 2. Cargar y renderizar la plantilla HTML
+	tmpl, err := template.ParseFiles("./templates/index.html")
+	if err != nil {
+		log.Println("Error al cargar plantilla:", err)
+		http.Error(w, "Error al cargar plantilla", http.StatusInternalServerError)
+		return // Detener ejecución
+	}
+
+	data := struct {
+		Products []ProductView
+	}{
+		Products: products,
+	}
+
+	err = tmpl.Execute(w, data)
+	if err != nil {
 		log.Println("Error al renderizar plantilla:", err)
-		http.Error(w, "Error al renderizar", http.StatusInternalServerError)
+		http.Error(w, "Error al renderizar plantilla", http.StatusInternalServerError)
+		return // Detener ejecución
 	}
 }

@@ -1,22 +1,20 @@
-// server.js
 require('dotenv').config(); // Cargar variables de entorno al inicio
 
 const express = require('express');
 const path = require('path');
-const jwt = require('jsonwebtoken');
 const connectDB = require('./config/db');
+const jwt = require('jsonwebtoken');
 const User = require('./models/User');
 
 // Rutas
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
-const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 
 // Conexión a la base de datos
 connectDB().then(() => {
-  createDefaultAdmin(); // Creamos el usuario admin por defecto, si no existe
+  createDefaultAdmin(); // Crear usuario administrador por defecto si no existe
 });
 
 // Crear admin por defecto
@@ -26,7 +24,7 @@ const createDefaultAdmin = async () => {
     if (!adminExists) {
       await User.create({
         username: 'admin',
-        password: 'password123',
+        password: 'password123', // Cambiar la contraseña después de la configuración inicial
         role: 'admin',
       });
       console.log('Usuario administrador por defecto creado: admin/password123');
@@ -34,10 +32,7 @@ const createDefaultAdmin = async () => {
       console.log('El usuario administrador ya existe.');
     }
   } catch (error) {
-    console.error(
-      'Error al crear el usuario administrador por defecto:',
-      error
-    );
+    console.error('Error al crear el usuario administrador por defecto:', error);
   }
 };
 
@@ -49,13 +44,13 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// (Opcional) si quieres leer el token aquí también, pero ya lo tienes en el authMiddleware
+// Middleware para manejar tokens JWT
 app.use((req, res, next) => {
   const token = req.query.token || req.headers.authorization;
   if (token) {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.userId = decoded.userId;
+      req.userId = decoded.userId; // Adjunta el userId decodificado a la solicitud
     } catch (error) {
       console.error('Token inválido:', error.message);
     }
@@ -64,12 +59,17 @@ app.use((req, res, next) => {
 });
 
 // Uso de rutas
-app.use('/auth', authRoutes);
-app.use('/admin', adminRoutes);
-app.use('/users', userRoutes); // o '/admin/users', depende de tu preferencia
+app.use('/auth', authRoutes); // Rutas de autenticación (login)
+app.use('/admin', adminRoutes); // Rutas del panel de administración
 
-// Servir archivos estáticos
+// Servir archivos estáticos (CSS, imágenes, etc.)
 app.use('/public', express.static(path.join(__dirname, 'public')));
+
+// Manejo de errores globales
+app.use((err, req, res, next) => {
+  console.error('Error:', err.message || err);
+  res.status(err.status || 500).send('Ocurrió un error en el servidor.');
+});
 
 // Arrancar servidor
 const PORT = process.env.PORT || 3000;

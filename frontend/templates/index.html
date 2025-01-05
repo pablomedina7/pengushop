@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tienda de Pingüinos</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Tienda Online de Pingüinos</h1>
+    <nav>
+      <a href="http://localhost:3000/auth/login">Iniciar sesión (Admin)</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Productos Disponibles</h2>
+    <div class="grid-container">
+      {{range .Products}}
+      <div class="grid-item">
+        <img src="{{.Image}}" alt="Producto" style="max-width: 100%; height: auto;">
+        <h3>{{.Name}}</h3>
+        <p>{{.Description}}</p>
+        <p>Precio: ${{.Price}}</p>
+        <form action="/order" method="POST">
+          <input type="hidden" name="productID" value="{{.ID}}">
+          <label for="customerName">Tu Nombre:</label>
+          <input type="text" name="customerName" required>
+          <label for="city">Ciudad:</label>
+          <input type="text" name="city" required>
+          <label for="phone">Teléfono:</label>
+          <input type="text" name="phone" required>
+          <label for="quantity">Cantidad:</label>
+          <input type="number" name="quantity" value="1" min="1" required>
+          <button type="submit">Hacer Pedido</button>
+        </form>
+      </div>
+      {{end}}
+    </div>    
+  </main>
+
+  <footer>
+    <p>© 2024 Tienda de Pingüinos</p>
+  </footer>
+</body>
+</html>

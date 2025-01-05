@@ -1,15 +1,11 @@
-// /middleware/authMiddleware.js
 const jwt = require('jsonwebtoken');
 
 exports.verifyToken = (req, res, next) => {
-  // Leer token de varias fuentes
   const token =
-    req.body.token || req.query.token || req.headers.authorization;
+    req.body.token || req.query.token || req.headers.authorization || localStorage.getItem('token'); // Incluye el token de localStorage.
 
   if (!token) {
-    return res
-      .status(403)
-      .send('Acceso denegado. No se proporcionó un token.');
+    return res.status(403).send('Acceso denegado. No se proporcionó un token.');
   }
 
   try {
@@ -17,6 +13,7 @@ exports.verifyToken = (req, res, next) => {
     req.userId = decoded.userId;
     next();
   } catch (error) {
-    return res.status(401).send('Token inválido.');
+    console.error('Token inválido:', error.message);
+    res.status(401).send('Token inválido.');
   }
 };

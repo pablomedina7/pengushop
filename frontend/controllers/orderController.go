@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/pablomedina7/pengushop/models"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -17,7 +18,6 @@ type OrderController struct {
 	productCollection *mongo.Collection
 }
 
-// NewOrderController construye el controlador para pedidos
 func NewOrderController(orderCol, productCol *mongo.Collection) *OrderController {
 	return &OrderController{
 		orderCollection:   orderCol,
@@ -25,7 +25,7 @@ func NewOrderController(orderCol, productCol *mongo.Collection) *OrderController
 	}
 }
 
-// CreateOrder maneja la creación de una orden via formulario (POST /order).
+// Crear pedido
 func (oc *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
@@ -37,24 +37,38 @@ func (oc *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Extraer valores del formulario
 	customerName := r.FormValue("customerName")
 	city := r.FormValue("city")
 	phone := r.FormValue("phone")
 	productIDStr := r.FormValue("productID")
 	quantityStr := r.FormValue("quantity")
 
+	// Convertir cantidad a entero
 	quantity, err := strconv.Atoi(quantityStr)
-	if err != nil {
+	if err != nil || quantity <= 0 {
 		http.Error(w, "Cantidad inválida", http.StatusBadRequest)
 		return
 	}
 
+	// Convertir productID a ObjectID
 	productID, err := primitive.ObjectIDFromHex(productIDStr)
 	if err != nil {
 		http.Error(w, "ID de producto inválido", http.StatusBadRequest)
 		return
 	}
 
+	// Verificar si el producto existe
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	product := models.Product{}
+	err = oc.productCollection.FindOne(ctx, bson.M{"_id": productID}).Decode(&product)
+	if err != nil {
+		http.Error(w, "Producto no encontrado", http.StatusNotFound)
+		return
+	}
+
+	// Crear el pedido
 	order := models.Order{
 		CustomerName: customerName,
 		City:         city,
@@ -65,11 +79,8 @@ func (oc *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 				Quantity:  quantity,
 			},
 		},
-		CreatedAt: primitive.NewDateTimeFromTime(time.Now()),
+		CreatedAt: primitive.NewDateTimeFromTime(time.Now()), // Conversión correcta
 	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
 
 	_, err = oc.orderCollection.InsertOne(ctx, order)
 	if err != nil {
@@ -78,6 +89,6 @@ func (oc *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Redirige de nuevo a la página principal
+	// Respuesta exitosa
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

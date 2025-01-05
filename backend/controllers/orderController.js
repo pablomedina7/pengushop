@@ -1,7 +1,6 @@
-// /controllers/orderController.js
+// controllers/orderController.js
 const Order = require('../models/order');
 
-// Actualizar estado de una orden
 exports.updateOrderStatus = async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
@@ -14,7 +13,6 @@ exports.updateOrderStatus = async (req, res) => {
   }
 };
 
-// Eliminar una orden
 exports.deleteOrder = async (req, res) => {
   const { id } = req.params;
   try {
