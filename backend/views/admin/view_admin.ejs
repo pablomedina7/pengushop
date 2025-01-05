@@ -23,6 +23,7 @@
         <tr>
           <th>Nombre</th>
           <th>Precio</th>
+          <th>Cantidad</th> <!-- Nueva columna -->
           <th>Acciones</th>
         </tr>
       </thead>
@@ -48,6 +49,15 @@
                 >
               </td>
               <td>
+                <input 
+                  type="number" 
+                  id="edit-quantity-<%= product._id %>" 
+                  value="<%= product.quantity %>" 
+                  min="0" 
+                  disabled
+                >
+              </td>
+              <td>
                 <button 
                   id="edit-btn-<%= product._id %>" 
                   onclick="enableEdit('<%= product._id %>')"
@@ -62,6 +72,7 @@
                 >
                   <input type="hidden" name="name" id="form-name-<%= product._id %>" value="<%= product.name %>">
                   <input type="hidden" name="price" id="form-price-<%= product._id %>" value="<%= product.price %>">
+                  <input type="hidden" name="quantity" id="form-quantity-<%= product._id %>" value="<%= product.quantity %>">
                   <input type="hidden" name="token" value="<%= token || '' %>">
                   <button type="submit" id="save-btn-<%= product._id %>" style="display:none;">Guardar</button>
                 </form>
@@ -78,10 +89,10 @@
           <% }) %>
         <% } else { %>
           <tr>
-            <td colspan="3">No hay productos disponibles.</td>
+            <td colspan="4">No hay productos disponibles.</td>
           </tr>
         <% } %>
-      </tbody>
+      </tbody>      
     </table>
 
     <!-- Formulario para añadir Producto -->
@@ -94,8 +105,11 @@
       <input type="number" id="price" name="price" step="0.01" required>
       <label for="image">URL de la Imagen:</label>
       <input type="text" id="image" name="image" required>
+      <label for="quantity">Cantidad:</label> <!-- Nuevo campo -->
+      <input type="number" id="quantity" name="quantity" min="0" required>
       <button type="submit">Añadir Producto</button>
     </form>
+
 
     <!-- Sección de Órdenes -->
     <h2>Órdenes</h2>

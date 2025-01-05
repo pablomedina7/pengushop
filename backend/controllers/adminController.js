@@ -18,11 +18,12 @@ exports.viewAdminDashboard = async (req, res) => {
   }
 };
 
+
 // Crear un producto
 exports.createProduct = async (req, res) => {
-  const { name, price, image } = req.body;
+  const { name, price, image, quantity } = req.body;
   try {
-    await Product.create({ name, price, image });
+    await Product.create({ name, price, image, quantity });
     res.redirect('/admin/dashboard');
   } catch (error) {
     console.error('Error al crear producto:', error.message);
@@ -30,18 +31,21 @@ exports.createProduct = async (req, res) => {
   }
 };
 
+
+// Editar un producto
 // Editar un producto
 exports.editProduct = async (req, res) => {
-  const { name, price } = req.body;
+  const { name, price, quantity } = req.body;
   const productId = req.params.id;
   try {
-    await Product.findByIdAndUpdate(productId, { name, price });
+    await Product.findByIdAndUpdate(productId, { name, price, quantity });
     res.redirect('/admin/dashboard');
   } catch (error) {
     console.error('Error al editar producto:', error.message);
     res.redirect('/admin/dashboard?error=Error al editar el producto');
   }
 };
+
 
 // Eliminar un producto
 exports.deleteProduct = async (req, res) => {
