@@ -1,20 +1,24 @@
 PenguShop - Tienda Online
 
 Backend: Servidor desarrollado en Node.js con Express y MongoDB.
+
 Frontend: Cliente desarrollado en Go para interactuar con el servidor y mostrar productos en una interfaz web.
+
 Requisitos previos
 Antes de configurar y ejecutar el proyecto, asegúrate de tener instalados los siguientes componentes:
-Node.js (versión 18 o superior)
-Go (versión 1.19 o superior)
-MongoDB (instalado y en ejecución)
+
+- Node.js (versión 18 o superior)
+- Go (versión 1.19 o superior)
+- MongoDB (instalado y en ejecución)
 
 Configuración del proyecto
 1. Clonar el repositorio
-Clona el repositorio del proyecto en tu máquina local:
-bash
 
-git clone https://github.com/tuusuario/pengushop.git
-cd pengushop
+Clona el repositorio del proyecto en tu máquina local:
+
+- git clone https://github.com/tuusuario/pengushop.git
+
+- cd pengushop
 2. Configuración del Backend
 a. Instalar dependencias
 Dirígete a la carpeta backend e instala las dependencias necesarias:
