@@ -1,4 +1,5 @@
 PenguShop - Tienda Online
+
 Backend: Servidor desarrollado en Node.js con Express y MongoDB.
 Frontend: Cliente desarrollado en Go para interactuar con el servidor y mostrar productos en una interfaz web.
 Requisitos previos
