@@ -25,57 +25,65 @@ Dirígete a la carpeta backend e instala las dependencias necesarias:
 
 bash
 
-cd backend
-npm install
-Ejecuta el siguiente comando para iniciar el servidor:
-bash
+- cd backend
+- npm install
+E
+jecuta el siguiente comando para iniciar el servidor:
+- npm run dev
 
-npm run dev
 El servidor backend estará disponible en: http://localhost:3000.
+
 3. Configuración del Frontend
 a. Instalar dependencias de Go
+
 Asegúrate de que Go esté configurado correctamente. Luego, dirígete a la carpeta frontend y descarga los módulos necesarios:
 
-bash
+- cd ../frontend
+- go mod tidy
 
-cd ../frontend
-go mod tidy
 b. Configurar variables de entorno
-Crea un archivo .env en la carpeta frontend con la URI de MongoDB:
-
+- Crea un archivo .env en la carpeta frontend con la URI de MongoDB:
 env
 MONGO_URI=mongodb://localhost:27017/pengushop
+
 c. Iniciar el servidor Frontend
+
 Ejecuta el siguiente comando para compilar y ejecutar el servidor frontend:
 
-bash
-go run main.go
-El servidor frontend estará disponible en: http://localhost:8080.
+- go run main.go
 
-Uso del proyecto
+- El servidor frontend estará disponible en: http://localhost:8080.
+
+
+______________Uso del proyecto_____________
 Acceso al Backend (Administradores):
 
 Abre http://localhost:3000/auth/login en tu navegador.
+
 Ingresa las credenciales predeterminadas:
-Usuario: paula
-Contraseña: paula
+- Usuario: paula
+- Contraseña: paula
+
 Cambia las credenciales después del primer inicio de sesión.
+
 Acceso al Frontend (Clientes):
 
 Abre http://localhost:8080 en tu navegador para ver los productos disponibles y realizar pedidos.
 
 Comandos Útiles
 Backend
-Instalar dependencias: npm install
-Ejecutar en desarrollo: npm run dev
-Frontend
-Instalar dependencias: go mod tidy
-Ejecutar el servidor: go run main.go
-Problemas Comunes
-Error al conectar con MongoDB:
+  Instalar dependencias: npm install
+  Ejecutar en desarrollo: npm run dev
 
-Asegúrate de que MongoDB esté ejecutándose en localhost:27017.
-Verifica que la URI de MongoDB sea correcta en el archivo .env.
-Errores al iniciar el servidor Go:
-Verifica que Go esté correctamente instalado.
-Asegúrate de que las dependencias estén instaladas con go mod tidy.
+Frontend
+  Instalar dependencias: go mod tidy
+  Ejecutar el servidor: go run main.go
+  Problemas Comunes
+- Error al conectar con MongoDB:
+
+  Asegúrate de que MongoDB esté ejecutándose en localhost:27017.
+  Verifica que la URI de MongoDB sea correcta en el archivo .env.
+
+  Errores al iniciar el servidor Go:
+- Verifica que Go esté correctamente instalado.
+- Asegúrate de que las dependencias estén instaladas con go mod tidy.
