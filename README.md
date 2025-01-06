@@ -72,6 +72,5 @@ Error al conectar con MongoDB:
 Asegúrate de que MongoDB esté ejecutándose en localhost:27017.
 Verifica que la URI de MongoDB sea correcta en el archivo .env.
 Errores al iniciar el servidor Go:
-
 Verifica que Go esté correctamente instalado.
 Asegúrate de que las dependencias estén instaladas con go mod tidy.
