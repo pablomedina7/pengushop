@@ -27,7 +27,6 @@ const createDefaultAdmin = async () => {
         password: 'paula', // Cambiar la contraseña después de la configuración inicial
         role: 'admin',
       });
-      console.log('Usuario administrador por defecto creado: admin/password123');
     } else {
     }
   } catch (error) {

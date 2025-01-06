@@ -31,7 +31,7 @@ func (oc *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
 		return
 	}
-
+	//procesa los datos enviados en el formulario
 	if err := r.ParseForm(); err != nil {
 		http.Error(w, "Error al procesar el formulario", http.StatusBadRequest)
 		return
@@ -68,7 +68,6 @@ func (oc *OrderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Crear el pedido con los detalles del producto
 	// Crear el pedido con los detalles del producto
 	order := models.Order{
 		CustomerName: customerName,

@@ -4,23 +4,23 @@ const Order = require('../models/order');
 // Mostrar el dashboard de administración
 exports.viewAdminDashboard = async (req, res) => {
   try {
-    const products = await Product.find({});
+    const products = await Product.find({});  // Obtiene todos los productos de la bd
     const orders = await Order.find({})
       .populate('items.productId', 'name image price') // Incluye los detalles del producto
       .exec();
-    const token = req.query.token; // O el método que uses para obtener el token
-    res.render('admin/view_admin', { products, orders, token, error: null });
-  } catch (err) {
-    console.error('Error al cargar el panel de administración:', err);
+    const token = req.query.token; // Obtiene el token de la URL
+    res.render('admin/view_admin', { products, orders, token, error: null }); //renderiza la vista
+  } catch (err) { 
+    console.error('Error al cargar el panel de administración:', err);//log del error
     res.render('admin/view_admin', { products: [], orders: [], token: '', error: 'Ocurrió un error al cargar los datos.' });
   }
 };
 // Crear un producto
 exports.createProduct = async (req, res) => {
-  const { name, price, image, quantity } = req.body;
+  const { name, price, image, quantity } = req.body; //extrae los datos del formulario
   try {
-    await Product.create({ name, price, image, quantity });
-    res.redirect('/admin/dashboard');
+    await Product.create({ name, price, image, quantity }); //crea un nuevo producto en la bd
+    res.redirect('/admin/dashboard');//redirige al dashboard despues de crear el producto 
   } catch (error) {
     console.error('Error al crear producto:', error.message);
     res.redirect('/admin/dashboard?error=Error al crear el producto');
