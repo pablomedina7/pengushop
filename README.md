@@ -11,7 +11,7 @@ Configuración del proyecto
 1. Clonar el repositorio
 Clona el repositorio del proyecto en tu máquina local:
 bash
-Copiar código
+
 git clone https://github.com/tuusuario/pengushop.git
 cd pengushop
 2. Configuración del Backend
@@ -19,12 +19,12 @@ a. Instalar dependencias
 Dirígete a la carpeta backend e instala las dependencias necesarias:
 
 bash
-Copiar código
+
 cd backend
 npm install
 Ejecuta el siguiente comando para iniciar el servidor:
 bash
-Copiar código
+
 npm run dev
 El servidor backend estará disponible en: http://localhost:3000.
 3. Configuración del Frontend
@@ -32,20 +32,18 @@ a. Instalar dependencias de Go
 Asegúrate de que Go esté configurado correctamente. Luego, dirígete a la carpeta frontend y descarga los módulos necesarios:
 
 bash
-Copiar código
+
 cd ../frontend
 go mod tidy
 b. Configurar variables de entorno
 Crea un archivo .env en la carpeta frontend con la URI de MongoDB:
 
 env
-Copiar código
 MONGO_URI=mongodb://localhost:27017/pengushop
 c. Iniciar el servidor Frontend
 Ejecuta el siguiente comando para compilar y ejecutar el servidor frontend:
 
 bash
-Copiar código
 go run main.go
 El servidor frontend estará disponible en: http://localhost:8080.
 
