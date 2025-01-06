@@ -1,26 +1,74 @@
 body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #ff0000;
+  display: flex;
+  flex-direction: column; /* Alinea los elementos en columna */
+  min-height: 100vh; /* Asegura que el cuerpo cubra toda la altura de la ventana */
+  margin: 0; /* Elimina márgenes */
+}
+
+.login-link a {
+  display: inline-block; /* Convierte el enlace en un elemento tipo bloque en línea */
+  padding: 10px 20px; /* Agrega espacio interior para que parezca un botón */
+  background-color: #ffffff; /* Color de fondo del botón */
+  color: rgb(0, 0, 0); /* Color del texto */
+  font-family: 'Trebuchet MS';
+  border: none; /* Elimina cualquier borde por defecto */
+  border-radius: 4px; /* Bordes redondeados */
+  text-align: center; /* Centra el texto */
+  text-decoration: none; /* Elimina el subrayado */
+  font-weight: bold; /* Hace el texto más fuerte */
+}
+.title {
+  font-family: 'Trebuchet MS';
+  font-size: 90px;
+  color: black;
+}
+.login-link a:hover {
+  background-color: #000000; /* Color de fondo al pasar el cursor */
+  color: #f1f1f1; /* Color del texto al pasar el cursor */
+}
+.logo-container {
+  display: inline-block; /* Asegura que se comporta como un elemento en línea */
+  vertical-align: middle; /* Alinea el logotipo con el texto */
+  margin-right: 5px; /* Espacio entre el logotipo y el texto */
+}
+
+.logo {
+  max-width: 100px; /* Ajusta el tamaño máximo del logotipo */
+  max-height: 100px; /* Ajusta el tamaño máximo del logotipo */
+  width: auto; /* Mantiene las proporciones del logotipo */
 }
 
 header {
-  background-color: #0077b6;
+  display: flex; /* Utiliza flexbox para organizar los elementos en el header */
+  align-items: center; /* Centra los elementos verticalmente */
+  justify-content: space-between; /* Distribuye los elementos de manera uniforme */
+  padding: 10px 15px; /* Ajusta el espacio dentro del encabezado */
+}
+
+h1 {
+  font-size: 20px; /* Ajusta el tamaño del texto del título */
+  margin: 0; /* Elimina márgenes para un diseño compacto */
+}
+
+header {
+  font-family:  'Libre Baskerville', serif; 
+  background-color: #ff8c00;
   color: white;
   padding: 20px;
-  text-align: center;
+  text-align: left;
 }
 
 header nav a {
-  color: white;
+  color: rgb(0, 0, 0);
   text-decoration: none;
-  margin-left: 10px;
+  margin-left: 15px;
 }
 
 main {
-  padding: 20px;
+  flex: 1; /* Hace que el contenido principal ocupe el espacio restante */
+  padding: 15px;
 }
+
 
 h1, h2 {
   text-align: center;
@@ -28,14 +76,14 @@ h1, h2 {
 
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 40px;
   margin-top: 20px;
 }
 
 .grid-item {
-  background: white;
-  border: 1px solid #ddd;
+  background: rgb(255, 115, 0);
+  border: 1px solid #000000;
   border-radius: 8px;
   padding: 16px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -43,19 +91,20 @@ h1, h2 {
 }
 
 .grid-item img {
+  color: #000;
   border-radius: 8px;
   max-width: 100%;
   height: auto;
 }
 
 .grid-item h3 {
-  color: #333;
+  color: #ffffff;
   font-size: 18px;
   margin: 10px 0;
 }
 
 .grid-item p {
-  color: #555;
+  color: #ffffff;
   font-size: 14px;
   margin: 8px 0;
 }
@@ -69,24 +118,36 @@ h1, h2 {
   width: calc(100% - 20px);
   margin: 5px auto;
   padding: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid #ffffff;
   border-radius: 4px;
   font-size: 14px;
 }
 
 .grid-item button {
-  background-color: #0077b6;
-  color: white;
+  background-color: #ffffff;
+  color: rgb(3, 3, 3);
   cursor: pointer;
 }
 
 .grid-item button:hover {
-  background-color: #005f8a;
+  background-color: #000000;
+  color: #ffffff;
+}
+h3 {
+  font-family:  'Libre Baskerville', serif;
+  
 }
 
 footer {
-  background-color: #f1f1f1;
   text-align: center;
+  background-color: #ff5900;
+  color: white;
   padding: 10px 0;
-  margin-top: 20px;
+}
+
+.footer-text {
+  font-size: 25px;
+  text-align: center;
+  padding: 5px;
+  font-family: 'Trebuchet MS';
 }

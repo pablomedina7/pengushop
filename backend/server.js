@@ -23,13 +23,12 @@ const createDefaultAdmin = async () => {
     const adminExists = await User.findOne({ username: 'admin' });
     if (!adminExists) {
       await User.create({
-        username: 'admin',
-        password: 'password123', // Cambiar la contraseña después de la configuración inicial
+        username: 'paula',
+        password: 'paula', // Cambiar la contraseña después de la configuración inicial
         role: 'admin',
       });
       console.log('Usuario administrador por defecto creado: admin/password123');
     } else {
-      console.log('El usuario administrador ya existe.');
     }
   } catch (error) {
     console.error('Error al crear el usuario administrador por defecto:', error);
@@ -39,7 +38,6 @@ const createDefaultAdmin = async () => {
 // Configuración del motor de vistas
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-
 
 // Middlewares
 app.use(express.urlencoded({ extended: true }));

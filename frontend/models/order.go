@@ -9,7 +9,6 @@ type OrderItem struct {
 	ProductName string             `bson:"productName"` // <-- Nuevo campo
 	Quantity    int                `bson:"quantity"`
 }
-
 type Order struct {
 	ID           primitive.ObjectID `bson:"_id,omitempty"`
 	CustomerName string             `bson:"customerName"`

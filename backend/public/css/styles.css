@@ -18,9 +18,25 @@ body {
   }
   
   header h1 {
-    color: #0077b6;
+    color: #d35110;
+  }
+  .titulo {
+    font-family: 'Trebuchet MS';
+    font-size: 50px;
+    color: black;
+    text-align: center;
+    
+  }
+  .login-container {
+    display: flex;
+    flex-direction: column; /* Organiza los elementos en columna */
+    align-items: center; /* Centra el contenido horizontalmente */
   }
   
+  .login-container .titulo {
+    margin-bottom: 20px; /* Espacio entre el título y el formulario */
+    text-align: center; /* Asegura que el texto esté centrado */
+  }  
   /* Formulario de login */
   main form {
     background-color: white;
@@ -46,7 +62,7 @@ body {
   }
   
   main form button {
-    background-color: #0077b6;
+    background-color: #e45c08;
     color: white;
     border: none;
     padding: 10px;
@@ -57,7 +73,7 @@ body {
   }
   
   main form button:hover {
-    background-color: #005f8a;
+    background-color: #000000;
   }
   
   /* Footer */

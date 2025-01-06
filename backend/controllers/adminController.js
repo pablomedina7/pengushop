@@ -8,17 +8,13 @@ exports.viewAdminDashboard = async (req, res) => {
     const orders = await Order.find({})
       .populate('items.productId', 'name image price') // Incluye los detalles del producto
       .exec();
-
     const token = req.query.token; // O el método que uses para obtener el token
-
     res.render('admin/view_admin', { products, orders, token, error: null });
   } catch (err) {
     console.error('Error al cargar el panel de administración:', err);
     res.render('admin/view_admin', { products: [], orders: [], token: '', error: 'Ocurrió un error al cargar los datos.' });
   }
 };
-
-
 // Crear un producto
 exports.createProduct = async (req, res) => {
   const { name, price, image, quantity } = req.body;
@@ -30,9 +26,6 @@ exports.createProduct = async (req, res) => {
     res.redirect('/admin/dashboard?error=Error al crear el producto');
   }
 };
-
-
-// Editar un producto
 // Editar un producto
 exports.editProduct = async (req, res) => {
   const { name, price, quantity } = req.body;
@@ -45,7 +38,6 @@ exports.editProduct = async (req, res) => {
     res.redirect('/admin/dashboard?error=Error al editar el producto');
   }
 };
-
 
 // Eliminar un producto
 exports.deleteProduct = async (req, res) => {
